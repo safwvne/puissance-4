@@ -1,0 +1,72 @@
+name: "🐛 Bug"
+description: "Reporter un bug"
+title: "[Bug] "
+labels: ["type:bug"]
+body:
+  - type: dropdown
+    id: area
+    attributes:
+      label: Zone concernée
+      options:
+        - gameplay
+        - ui
+        - network
+        - auth
+        - scoreboard
+        - chat
+        - other
+    validations:
+      required: true
+
+  - type: textarea
+    id: bug_desc
+    attributes:
+      label: Description du bug
+      placeholder: "Ex: Après 3 coups, le jeton s'affiche au mauvais endroit..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Étapes pour reproduire
+      value: |
+        1. ...
+        2. ...
+        3. ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Résultat attendu
+      placeholder: "Ex: Le jeton devrait tomber sur la dernière case vide de la colonne."
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Résultat obtenu
+      placeholder: "Ex: Le jeton apparaît en haut, ou ça crash."
+    validations:
+      required: true
+
+  - type: input
+    id: env
+    attributes:
+      label: Environnement
+      description: OS, Java version, IntelliJ version
+      placeholder: "Ex: Windows 11, Java 21, IntelliJ 2024.x"
+    validations:
+      required: false
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs / stacktrace
+      render: shell
+      placeholder: "Colle ici l'erreur / stacktrace si dispo"
+    validations:
+      required: false

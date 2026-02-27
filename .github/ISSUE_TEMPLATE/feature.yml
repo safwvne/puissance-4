@@ -1,0 +1,74 @@
+name: "✨ Feature"
+description: "Proposer une nouvelle fonctionnalité"
+title: "[Feature] "
+labels: ["type:feature"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Merci de décrire la fonctionnalité de façon claire. Ajoute des captures si nécessaire.
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Zone concernée
+      options:
+        - gameplay
+        - ui
+        - network
+        - auth
+        - scoreboard
+        - architecture
+        - chat
+        - other
+    validations:
+      required: true
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priorité
+      options:
+        - P0 (bloquant)
+        - P1 (important)
+        - P2 (nice-to-have)
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Contexte / Problème à résoudre
+      description: Pourquoi on en a besoin ? Quel problème ça règle ?
+      placeholder: "Ex: On veut jouer sur 2 machines, il faut envoyer les coups en réseau..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Solution proposée
+      description: Décris la solution attendue (comportement, UI, règles, etc.)
+      placeholder: "Ex: TCP sockets, messages MOVE avec numéro de colonne..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Critères d'acceptation
+      description: Checklist de ce qui doit être vrai pour considérer l’issue terminée.
+      value: |
+        - [ ] ...
+        - [ ] ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: notes
+    attributes:
+      label: Notes / Ressources
+      description: Liens, docs, idées, schémas...
+      placeholder: "Ex: lien vers doc JavaFX, schéma réseau..."
+    validations:
+      required: false

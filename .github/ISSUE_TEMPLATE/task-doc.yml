@@ -1,0 +1,69 @@
+name: "🧩 Task / Doc"
+description: "Tâche technique, refactor, documentation, gestion de projet"
+title: "[Task] "
+labels: ["type:task"]
+body:
+  - type: dropdown
+    id: category
+    attributes:
+      label: Catégorie
+      options:
+        - task (technique)
+        - doc (documentation)
+        - refactor
+        - project-management
+    validations:
+      required: true
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Zone concernée
+      options:
+        - architecture
+        - gameplay
+        - ui
+        - network
+        - auth
+        - scoreboard
+        - planning
+        - other
+    validations:
+      required: true
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priorité
+      options:
+        - P0 (bloquant)
+        - P1 (important)
+        - P2 (nice-to-have)
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      placeholder: "Ex: Rédiger le cahier des charges et le planning par étapes..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: checklist
+    attributes:
+      label: Checklist (Definition of Done)
+      value: |
+        - [ ] ...
+        - [ ] ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: deliverables
+    attributes:
+      label: Livrables attendus
+      placeholder: "Ex: ARCHITECTURE.md, PLANNING.md, schéma réseau..."
+    validations:
+      required: false
