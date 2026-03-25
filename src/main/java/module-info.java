@@ -19,9 +19,11 @@ module com.devops.puissance4 {
 
     opens com.devops.puissance4 to javafx.fxml;
     opens com.devops.puissance4.controller to javafx.fxml;
+    opens com.devops.puissance4.client to javafx.fxml, javafx.graphics;
     opens com.devops.puissance4.model to org.hibernate.orm.core, jakarta.persistence;
 
     exports com.devops.puissance4;
     exports com.devops.puissance4.controller;
     exports com.devops.puissance4.model;
+    exports com.devops.puissance4.client;
 }
