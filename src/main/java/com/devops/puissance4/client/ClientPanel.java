@@ -207,8 +207,10 @@ public class ClientPanel extends Parent {
 
         for (int row = ROWS - 1; row >= 0; row--) {
             if (grid[row][col] == 0) {
-                grid[row][col] = 1;
-                circles[row][col].setFill(Color.YELLOW);
+                grid[row][col] = playerNumber;
+
+                Color c = (playerNumber == 1) ? Color.YELLOW : Color.RED;
+                circles[row][col].setFill(c);
                 if (client != null) {
                     client.sendMessage(new Message("Moi", "MOVE:" + col));
                 }
