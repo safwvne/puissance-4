@@ -2,10 +2,16 @@ package com.devops.puissance4.controller;
 
 import com.devops.puissance4.model.Player;
 import com.devops.puissance4.service.AuthService;
+import com.devops.puissance4.util.Session;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.stage.Stage;
+import java.io.IOException;
 
 public class LoginController {
 
@@ -21,31 +27,55 @@ public class LoginController {
     private final AuthService authService = new AuthService();
 
     @FXML
-    public void onLoginClicked() {
+    private void handleLogin() {
         try {
-            Player player = authService.login(
-                    usernameField.getText(),
-                    passwordField.getText()
-            );
+            String username = usernameField.getText().trim();
+            String password = passwordField.getText();
 
-            messageLabel.setText("Welcome " + player.getUsername());
-            // ici tu changes de scène
+            Player player = authService.login(username, password);
+            Session.setCurrentPlayer(player);
+
+            openGameView();
+        } catch (IllegalArgumentException e) {
+            showMessage(e.getMessage(), false);
         } catch (Exception e) {
-            messageLabel.setText(e.getMessage());
+            showMessage("Une erreur est survenue pendant la connexion.", false);
         }
     }
 
     @FXML
-    public void onRegisterClicked() {
+    private void handleRegister() {
         try {
-            Player player = authService.register(
-                    usernameField.getText(),
-                    passwordField.getText()
-            );
+            String username = usernameField.getText().trim();
+            String password = passwordField.getText();
 
-            messageLabel.setText("Account created for " + player.getUsername());
+            Player player = authService.register(username, password);
+            Session.setCurrentPlayer(player);
+
+            openGameView();
+        } catch (IllegalArgumentException e) {
+            showMessage(e.getMessage(), false);
         } catch (Exception e) {
-            messageLabel.setText(e.getMessage());
+            showMessage("Une erreur est survenue pendant la création du compte.", false);
         }
+    }
+
+    private void openGameView() throws IOException {
+        FXMLLoader loader = new FXMLLoader(
+                getClass().getResource("/com/devops/puissance4/game-view.fxml")
+        );
+        Parent root = loader.load();
+
+        Stage stage = (Stage) usernameField.getScene().getWindow();
+        stage.setTitle("Puissance 4");
+        stage.setScene(new Scene(root, 620, 800));
+        stage.show();
+    }
+
+    private void showMessage(String message, boolean success) {
+        messageLabel.setText(message);
+        messageLabel.setStyle(success
+                ? "-fx-text-fill: #1f7a1f;"
+                : "-fx-text-fill: #c62828;");
     }
 }

@@ -1,45 +1,26 @@
 package com.devops.puissance4.client;
 
 import javafx.application.Application;
-import javafx.scene.Group;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.HBox;
+import javafx.scene.Parent;
 import javafx.stage.Stage;
-
-import java.io.FileInputStream;
-import java.io.IOException;
 
 public class MainGui extends Application {
 
     @Override
-    public void start(Stage stage) throws IOException {
-        Group root = new Group();
-
-        ClientPanel clientPanel = new ClientPanel();
-        root.getChildren().add(clientPanel);
-
-        //Setup btn click
+    public void start(Stage stage) throws Exception {
+        System.out.println("Application démarrée");
+        FXMLLoader loader = new FXMLLoader(
+                getClass().getResource("/com/devops/puissance4/login-view.fxml")
+        );
+        Parent root = loader.load();
 
         Scene scene = new Scene(root, 620, 800);
-        stage.setTitle("Puissance 4");
+        stage.setTitle("Puissance 4 - Authentification");
         stage.setScene(scene);
         stage.show();
-
-        // Arguments: host port
-        String host = "127.0.0.1";
-        int port = 5000;
-
-        if (getParameters().getRaw().size() >= 2) {
-            host = getParameters().getRaw().get(0);
-            port = Integer.parseInt(getParameters().getRaw().get(1));
-        }
-
-        Client client = new Client(host, port);
-
-        clientPanel.setClient(client);
-        client.setView(clientPanel);
+        System.out.println("Fenêtre affichée");
     }
 
     public static void main(String[] args) {
