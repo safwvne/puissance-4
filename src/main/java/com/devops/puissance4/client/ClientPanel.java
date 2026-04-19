@@ -313,16 +313,37 @@ public class ClientPanel extends Parent {
                 statusLabel.setTextFill(Color.ORANGE);
                 resetBoard();
 
-            } else if (content.startsWith("TURN:")) {
-                currentTurn = Integer.parseInt(content.split(":")[1]);
-                if (gameStarted && isPvP) updateTurnLabel();
-
             } else if (content.startsWith("MOVE:")) {
                 int col = Integer.parseInt(content.split(":")[1].trim());
                 applyOpponentMove(col);
 
+            } else if (content.startsWith("GAME_OVER:WINNER:")) {
+                int winner = Integer.parseInt(content.split(":")[2]);
+                gameStarted = false;
+
+                if (winner == playerNumber) {
+                    turnLabel.setText("Partie terminée : vous avez gagné !");
+                    turnLabel.setTextFill(Color.LIMEGREEN);
+                } else {
+                    turnLabel.setText("Partie terminée : vous avez perdu.");
+                    turnLabel.setTextFill(Color.ORANGERED);
+                }
+
+            } else if (content.startsWith("GAME_OVER:DRAW")) {
+                gameStarted = false;
+                turnLabel.setText("Partie terminée : match nul.");
+                turnLabel.setTextFill(Color.DEEPSKYBLUE);
+
             } else if (content.startsWith("ERROR:NOT_YOUR_TURN")) {
                 // Ignorer, l'UI bloque déjà
+
+            } else if (content.startsWith("ERROR:COLUMN_FULL")) {
+                turnLabel.setText("Colonne pleine, choisissez-en une autre.");
+                turnLabel.setTextFill(Color.ORANGE);
+
+            } else if (content.startsWith("ERROR:INVALID_MOVE")) {
+                turnLabel.setText("Coup invalide.");
+                turnLabel.setTextFill(Color.ORANGE);
 
             } else {
                 printChatMessage(mess);
