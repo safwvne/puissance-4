@@ -73,20 +73,29 @@ public class ClientPanel extends Parent {
         statusLabel = new Label("En attente d'un adversaire...");
         statusLabel.setFont(Font.font("Arial", FontWeight.BOLD, 18));
 
-        // Indicateur de joueurs
+        Label infoLabel = new Label(
+                "Mode PvP : attribution automatique.\n" +
+                        "Vous devenez Joueur 1 ou Joueur 2 selon l'ordre de connexion."
+        );
+        infoLabel.setFont(Font.font("Arial", 14));
+        infoLabel.setStyle("-fx-text-fill: #555;");
+        infoLabel.setWrapText(true);
+        infoLabel.setMaxWidth(420);
+        infoLabel.setAlignment(Pos.CENTER);
+
+        // Indicateur de places
         HBox playersBox = new HBox(30);
         playersBox.setAlignment(Pos.CENTER);
 
-        VBox p1Box = buildPlayerSlot("Joueur 1", Color.YELLOW);
-        VBox p2Box = buildPlayerSlot("Joueur 2", Color.RED);
+        VBox p1Box = buildPlayerSlot("Place 1", Color.YELLOW);
+        VBox p2Box = buildPlayerSlot("Place 2", Color.RED);
         playersBox.getChildren().addAll(p1Box, p2Box);
 
         Button pveBtn = new Button("Jouer seul (PvE)");
         pveBtn.setStyle("-fx-background-color: #d1d1db; -fx-text-fill: BLACK; -fx-font-size: 14; -fx-padding: 10 25; -fx-background-radius: 8;");
         pveBtn.setOnAction(e -> startPvE());
 
-        lobbyPane.getChildren().addAll(title, statusLabel, playersBox, pveBtn);
-    }
+        lobbyPane.getChildren().addAll(title, statusLabel, infoLabel, playersBox, pveBtn);    }
 
     private VBox buildPlayerSlot(String name, Color color) {
         VBox box = new VBox(8);

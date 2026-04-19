@@ -15,7 +15,6 @@ public class Client {
         this.socket = new Socket(address, port);
         this.out = new ObjectOutputStream(socket.getOutputStream());
 
-
         new Thread(new ClientReceive(this, socket)).start();
 //        new Thread(new ClientSend(socket, out)).start();
     }
@@ -27,6 +26,13 @@ public class Client {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public void authenticate(String username) {
+        if (username == null || username.isBlank()) {
+            return;
+        }
+        sendMessage(new Message(username, "AUTH:" + username));
     }
 
     public void messageReceived(Message mess) {
