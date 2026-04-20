@@ -1,6 +1,8 @@
 package com.devops.puissance4.client;
 
 import com.devops.puissance4.common.Message;
+import com.devops.puissance4.model.Player;
+import com.devops.puissance4.util.Session;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -26,6 +28,24 @@ public class Client {
         this.socket = new Socket(address, port);
         this.out = new ObjectOutputStream(socket.getOutputStream());
         new Thread(new ClientReceive(this, socket)).start();
+
+        sendJoinPlayerMessage();
+    }
+
+    private void sendJoinPlayerMessage() {
+        Player currentPlayer = Session.getCurrentPlayer();
+        if (currentPlayer == null || currentPlayer.getId() == null) {
+            return;
+        }
+
+        String username = currentPlayer.getUsername() != null
+                ? currentPlayer.getUsername().replace(":", "_")
+                : "unknown";
+
+        sendMessage(new Message(
+                "SYSTEM",
+                "JOIN_PLAYER:" + currentPlayer.getId() + ":" + username
+        ));
     }
 
     public synchronized boolean isConnected() {

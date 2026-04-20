@@ -2,7 +2,6 @@ package com.devops.puissance4.controller;
 
 import com.devops.puissance4.client.Client;
 import com.devops.puissance4.client.ClientPanel;
-import com.devops.puissance4.model.Player;
 import com.devops.puissance4.util.Session;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;

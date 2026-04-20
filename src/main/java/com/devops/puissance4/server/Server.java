@@ -1,8 +1,10 @@
 package com.devops.puissance4.server;
 
 import com.devops.puissance4.common.Message;
+import com.devops.puissance4.service.GameRecordService;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -15,10 +17,12 @@ public class Server {
     private final int port;
     private final List<ConnectedClient> clients;
     private final Set<Integer> rematchReadyPlayers = new HashSet<>();
+    private final GameRecordService gameRecordService = new GameRecordService();
 
     private int currentTurn = 1;
     private final int[][] grid = new int[ROWS][COLS];
     private boolean gameStarted = false;
+    private LocalDateTime currentGameStartTime;
 
     public Server(int port) throws IOException {
         this.port = port;
@@ -72,6 +76,7 @@ public class Server {
         resetBoard();
         gameStarted = true;
         currentTurn = 1;
+        currentGameStartTime = LocalDateTime.now();
         rematchReadyPlayers.clear();
 
         p1.sendMessage(new Message("Serveur", "STATE:READY:1"));
@@ -107,12 +112,14 @@ public class Server {
 
         if (isWinningMove(row, col, player)) {
             gameStarted = false;
+            saveFinishedGame(player);
             broadcastMessage(new Message("Serveur", "GAME_OVER:WINNER:" + player), -1);
             return;
         }
 
         if (isBoardFull()) {
             gameStarted = false;
+            saveFinishedGame(0);
             broadcastMessage(new Message("Serveur", "GAME_OVER:DRAW"), -1);
             return;
         }
@@ -139,6 +146,7 @@ public class Server {
         rematchReadyPlayers.clear();
         gameStarted = false;
         resetBoard();
+        currentGameStartTime = null;
         broadcastMessage(new Message("Serveur", "REMATCH:MENU"), -1);
     }
 
@@ -149,6 +157,7 @@ public class Server {
         gameStarted = false;
         resetBoard();
         currentTurn = 1;
+        currentGameStartTime = null;
 
         if (clients.size() == 1) {
             ConnectedClient remaining = clients.get(0);
@@ -156,6 +165,40 @@ public class Server {
             remaining.sendMessage(new Message("Serveur", "STATE:OPPONENT_LEFT"));
             remaining.sendMessage(new Message("Serveur", "STATE:WAITING"));
         }
+    }
+
+    private void saveFinishedGame(int winnerPlayerNumber) {
+        ConnectedClient player1 = getClientByPlayerNumber(1);
+        ConnectedClient player2 = getClientByPlayerNumber(2);
+
+        if (player1 == null || player2 == null) {
+            return;
+        }
+
+        if (!player1.hasLinkedPlayer() || !player2.hasLinkedPlayer()) {
+            return;
+        }
+
+        try {
+            gameRecordService.recordFinishedGame(
+                    player1.getPlayerId(),
+                    player2.getPlayerId(),
+                    winnerPlayerNumber,
+                    currentGameStartTime,
+                    LocalDateTime.now()
+            );
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private ConnectedClient getClientByPlayerNumber(int playerNumber) {
+        for (ConnectedClient client : clients) {
+            if (client.getPlayerNumber() == playerNumber) {
+                return client;
+            }
+        }
+        return null;
     }
 
     private void resetBoard() {

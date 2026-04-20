@@ -12,6 +12,8 @@ public class ConnectedClient implements Runnable {
 
     private int id;
     private int playerNumber;
+    private Long playerId;
+    private String username;
     private Server server;
     private Socket socket;
     private ObjectOutputStream out;
@@ -36,6 +38,23 @@ public class ConnectedClient implements Runnable {
         this.playerNumber = n;
     }
 
+    public Long getPlayerId() {
+        return playerId;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setPlayerIdentity(Long playerId, String username) {
+        this.playerId = playerId;
+        this.username = username;
+    }
+
+    public boolean hasLinkedPlayer() {
+        return playerId != null;
+    }
+
     public void sendMessage(Message mess) {
         try {
             out.writeObject(mess);
@@ -53,16 +72,22 @@ public class ConnectedClient implements Runnable {
                 if (mess != null) {
                     String content = mess.getContent();
 
-                    if (content != null && content.startsWith("MOVE:")) {
+                    if (content != null && content.startsWith("JOIN_PLAYER:")) {
+                        handleJoinPlayer(content);
+
+                    } else if (content != null && content.startsWith("MOVE:")) {
                         try {
                             int col = Integer.parseInt(content.split(":")[1].trim());
                             server.handleMove(this, col);
                         } catch (NumberFormatException ignored) {
                         }
+
                     } else if ("REMATCH:READY".equals(content)) {
                         server.handleRematchReady(this);
+
                     } else if ("REMATCH:MENU".equals(content)) {
                         server.handleRematchMenu();
+
                     } else {
                         mess.setSender("Joueur " + playerNumber);
                         server.broadcastMessage(mess, id);
@@ -71,6 +96,21 @@ public class ConnectedClient implements Runnable {
             }
         } catch (Exception e) {
             server.disconnectedClient(this);
+        }
+    }
+
+    private void handleJoinPlayer(String content) {
+        try {
+            String[] parts = content.split(":", 3);
+            if (parts.length < 3) {
+                return;
+            }
+
+            Long parsedPlayerId = Long.parseLong(parts[1].trim());
+            String parsedUsername = parts[2].trim();
+
+            setPlayerIdentity(parsedPlayerId, parsedUsername);
+        } catch (Exception ignored) {
         }
     }
 
