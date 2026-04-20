@@ -5,7 +5,7 @@ public class MainServer {
     public static void main(String[] args) {
         try {
             if (args.length != 1) {
-                System.out.println("Usage: java com.devops.server.MainServer <port>"); // [cite: 270]
+                System.out.println("Usage: java com.devops.server.MainServer <port>");
             } else {
                 int port = Integer.parseInt(args[0]);
                 new Server(port);

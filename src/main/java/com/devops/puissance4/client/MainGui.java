@@ -14,14 +14,11 @@ public class MainGui extends Application {
         ClientPanel clientPanel = new ClientPanel();
         root.getChildren().add(clientPanel);
 
-        //Setup btn click
-
         Scene scene = new Scene(root, 620, 800);
         stage.setTitle("Puissance 4");
         stage.setScene(scene);
         stage.show();
 
-        // Arguments: host port
         String host = "127.0.0.1";
         int port = 5000;
 

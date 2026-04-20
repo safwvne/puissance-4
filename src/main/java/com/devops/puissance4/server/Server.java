@@ -21,7 +21,6 @@ public class Server {
     }
 
     public int getPort() { return port; }
-    public int getNumClients() { return clients.size(); }
 
     public synchronized void broadcastMessage(Message mess, int id) {
         for (ConnectedClient client : clients) {

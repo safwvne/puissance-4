@@ -32,7 +32,6 @@ public class ClientPanel extends Parent {
     private boolean gameEnded = false;
     private boolean expectedDisconnect = false;
 
-    // 0 = empty, 1 = player1, 2 = player2
     private int[][] grid = new int[ROWS][COLS];
     private final Circle[][] circles = new Circle[ROWS][COLS];
 
