@@ -5,6 +5,10 @@ import com.devops.puissance4.model.Player;
 import com.devops.puissance4.util.PasswordUtil;
 
 import java.time.LocalDateTime;
+<<<<<<< HEAD
+=======
+import java.util.Optional;
+>>>>>>> origin/gameplay
 
 public class AuthService {
 
@@ -13,6 +17,7 @@ public class AuthService {
     public Player register(String username, String rawPassword) {
         validateCredentials(username, rawPassword);
 
+<<<<<<< HEAD
         username = username.trim();
 
         if (playerRepository.findByUsername(username).isPresent()) {
@@ -27,10 +32,20 @@ public class AuthService {
         player.setCreatedAt(LocalDateTime.now());
         player.setLastLogin(null);
 
+=======
+        Optional<Player> existing = playerRepository.findByUsername(username);
+        if (existing.isPresent()) {
+            throw new IllegalArgumentException("Username already exists.");
+        }
+
+        String hash = PasswordUtil.hashPassword(rawPassword);
+        Player player = new Player(username, hash);
+>>>>>>> origin/gameplay
         return playerRepository.save(player);
     }
 
     public Player login(String username, String rawPassword) {
+<<<<<<< HEAD
         if (username == null || username.isBlank()) {
             throw new IllegalArgumentException("Username is required.");
         }
@@ -40,6 +55,9 @@ public class AuthService {
         }
 
         Player player = playerRepository.findByUsername(username.trim())
+=======
+        Player player = playerRepository.findByUsername(username)
+>>>>>>> origin/gameplay
                 .orElseThrow(() -> new IllegalArgumentException("Invalid username or password."));
 
         if (!PasswordUtil.verifyPassword(rawPassword, player.getPasswordHash())) {

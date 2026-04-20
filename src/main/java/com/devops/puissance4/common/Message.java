@@ -12,7 +12,10 @@ public class Message implements Serializable {
     }
 
     public void setSender(String sender) { this.sender = sender; }
+<<<<<<< HEAD
     public String getSender() { return sender; }
+=======
+>>>>>>> origin/gameplay
     public String getContent() { return content; }
 
     @Override
