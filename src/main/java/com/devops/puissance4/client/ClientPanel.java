@@ -2,10 +2,7 @@ package com.devops.puissance4.client;
 
 import com.devops.puissance4.common.Message;
 import javafx.application.Platform;
-<<<<<<< HEAD
-=======
 import javafx.geometry.Insets;
->>>>>>> origin/gameplay
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
@@ -32,27 +29,6 @@ public class ClientPanel extends Parent {
     private int currentTurn = 0;
     private boolean gameStarted = false;
     private boolean isPvP = false;
-<<<<<<< HEAD
-
-    // Grille logique : 0 = vide, 1 = joueur1, 2 = joueur2
-    private int[][] grid = new int[ROWS][COLS];
-    private Circle[][] circles = new Circle[ROWS][COLS];
-
-    private Client client;
-
-    private StackPane root;
-    private VBox lobbyPane;
-    private VBox gamePane;
-    private Label statusLabel;
-    private Label turnLabel;
-    private TextArea textToSend;
-    private ScrollPane scrollReceivedText;
-    private TextFlow receivedText;
-    private Button sendBtn;
-    private Button clearBtn;
-
-    // Main
-=======
     private boolean gameEnded = false;
     private boolean expectedDisconnect = false;
 
@@ -85,19 +61,10 @@ public class ClientPanel extends Parent {
     private Label myTokenLegendLabel;
     private Label opponentTokenLegendLabel;
 
->>>>>>> origin/gameplay
     public ClientPanel() {
         root = new StackPane();
         root.setPrefSize(620, 800);
 
-<<<<<<< HEAD
-        buildLobby();
-        buildGame();
-
-        root.getChildren().addAll(gamePane, lobbyPane);
-        lobbyPane.setVisible(true);
-        gamePane.setVisible(false);
-=======
         buildStartMenu();
         buildLobby();
         buildGame();
@@ -105,14 +72,10 @@ public class ClientPanel extends Parent {
 
         root.getChildren().addAll(gamePane, lobbyPane, startPane, endOverlay);
         showStartMenu("Choisissez un mode.");
->>>>>>> origin/gameplay
 
         this.getChildren().add(root);
     }
 
-<<<<<<< HEAD
-    // Attente de joueur
-=======
     private void buildStartMenu() {
         startPane = new VBox(16);
         startPane.setAlignment(Pos.CENTER);
@@ -136,7 +99,6 @@ public class ClientPanel extends Parent {
         startPane.getChildren().addAll(title, soloBtn, pvpBtn, startStatusLabel);
     }
 
->>>>>>> origin/gameplay
     private void buildLobby() {
         lobbyPane = new VBox(20);
         lobbyPane.setAlignment(Pos.CENTER);
@@ -148,31 +110,6 @@ public class ClientPanel extends Parent {
         statusLabel = new Label("En attente d'un adversaire...");
         statusLabel.setFont(Font.font("Arial", FontWeight.BOLD, 18));
 
-<<<<<<< HEAD
-        Label infoLabel = new Label(
-                "Mode PvP : attribution automatique.\n" +
-                        "Vous devenez Joueur 1 ou Joueur 2 selon l'ordre de connexion."
-        );
-        infoLabel.setFont(Font.font("Arial", 14));
-        infoLabel.setStyle("-fx-text-fill: #555;");
-        infoLabel.setWrapText(true);
-        infoLabel.setMaxWidth(420);
-        infoLabel.setAlignment(Pos.CENTER);
-
-        // Indicateur de places
-        HBox playersBox = new HBox(30);
-        playersBox.setAlignment(Pos.CENTER);
-
-        VBox p1Box = buildPlayerSlot("Place 1", Color.YELLOW);
-        VBox p2Box = buildPlayerSlot("Place 2", Color.RED);
-        playersBox.getChildren().addAll(p1Box, p2Box);
-
-        Button pveBtn = new Button("Jouer seul (PvE)");
-        pveBtn.setStyle("-fx-background-color: #d1d1db; -fx-text-fill: BLACK; -fx-font-size: 14; -fx-padding: 10 25; -fx-background-radius: 8;");
-        pveBtn.setOnAction(e -> startPvE());
-
-        lobbyPane.getChildren().addAll(title, statusLabel, infoLabel, playersBox, pveBtn);    }
-=======
         HBox playersBox = new HBox(30);
         playersBox.setAlignment(Pos.CENTER);
 
@@ -186,7 +123,6 @@ public class ClientPanel extends Parent {
 
         lobbyPane.getChildren().addAll(title, statusLabel, playersBox, cancelBtn);
     }
->>>>>>> origin/gameplay
 
     private VBox buildPlayerSlot(String name, Color color) {
         VBox box = new VBox(8);
@@ -205,22 +141,11 @@ public class ClientPanel extends Parent {
         return box;
     }
 
-<<<<<<< HEAD
-    //Jeu
-=======
->>>>>>> origin/gameplay
     private void buildGame() {
         gamePane = new VBox(10);
         gamePane.setAlignment(Pos.TOP_CENTER);
         gamePane.setPrefSize(620, 800);
 
-<<<<<<< HEAD
-        // Bandeau statut
-        turnLabel = new Label("En attente...");
-        turnLabel.setFont(Font.font("Arial", FontWeight.BOLD, 18));
-
-        // Plateau
-=======
         turnLabel = new Label("En attente...");
         turnLabel.setFont(Font.font("Arial", FontWeight.BOLD, 18));
 
@@ -243,7 +168,6 @@ public class ClientPanel extends Parent {
 
         tokenLegend.getChildren().addAll(myLegendBox, opponentLegendBox);
 
->>>>>>> origin/gameplay
         GridPane boardGrid = new GridPane();
         boardGrid.setHgap(5);
         boardGrid.setVgap(5);
@@ -275,16 +199,11 @@ public class ClientPanel extends Parent {
             StackPane columnStack = new StackPane(columnCells, colHighlight);
 
             columnStack.setOnMouseEntered(e -> {
-<<<<<<< HEAD
-                if (isMyTurn()) colHighlight.setFill(Color.rgb(255, 255, 255, 0.15));
-                else colHighlight.setFill(Color.rgb(255, 0, 0, 0.08));
-=======
                 if (isMyTurn()) {
                     colHighlight.setFill(Color.rgb(255, 255, 255, 0.15));
                 } else {
                     colHighlight.setFill(Color.rgb(255, 0, 0, 0.08));
                 }
->>>>>>> origin/gameplay
             });
             columnStack.setOnMouseExited(e -> colHighlight.setFill(Color.TRANSPARENT));
             columnStack.setOnMouseClicked(e -> playInColumn(c));
@@ -295,10 +214,6 @@ public class ClientPanel extends Parent {
         HBox boardContainer = new HBox(boardGrid);
         boardContainer.setAlignment(Pos.CENTER);
 
-<<<<<<< HEAD
-        // Chat
-=======
->>>>>>> origin/gameplay
         scrollReceivedText = new ScrollPane();
         scrollReceivedText.setPrefWidth(500);
         scrollReceivedText.setPrefHeight(120);
@@ -314,42 +229,18 @@ public class ClientPanel extends Parent {
         textToSend.setPrefHeight(50);
         textToSend.setWrapText(true);
 
-<<<<<<< HEAD
-        sendBtn = new Button("Envoyer");
-        sendBtn.setStyle("-fx-background-color: #1a6fc4; -fx-text-fill: white; -fx-background-radius: 6;");
-        clearBtn = new Button("Effacer");
-=======
         Button sendBtn = new Button("Envoyer");
         sendBtn.setStyle("-fx-background-color: #1a6fc4; -fx-text-fill: white; -fx-background-radius: 6;");
         Button clearBtn = new Button("Effacer");
->>>>>>> origin/gameplay
         clearBtn.setStyle("-fx-background-color: #555; -fx-text-fill: white; -fx-background-radius: 6;");
 
         chatInput.getChildren().addAll(textToSend, sendBtn, clearBtn);
 
-<<<<<<< HEAD
-        gamePane.getChildren().addAll(turnLabel, boardContainer, scrollReceivedText, chatInput);
-=======
         gamePane.getChildren().addAll(turnLabel, tokenLegend, boardContainer, scrollReceivedText, chatInput);
->>>>>>> origin/gameplay
 
         clearBtn.setOnAction(e -> textToSend.clear());
         sendBtn.setOnAction(e -> {
             String txt = textToSend.getText().trim();
-<<<<<<< HEAD
-            if (txt.isEmpty()) return;
-            Message mess = new Message("Moi", txt);
-            printChatMessage(mess);
-            textToSend.clear();
-            if (client != null) client.sendMessage(mess);
-        });
-    }
-
-    //logique
-    private boolean isMyTurn() {
-        if (!gameStarted) return false;
-        if (!isPvP) return true;
-=======
             if (txt.isEmpty()) {
                 return;
             }
@@ -404,36 +295,24 @@ public class ClientPanel extends Parent {
         if (!isPvP) {
             return true;
         }
->>>>>>> origin/gameplay
         return currentTurn == playerNumber;
     }
 
     private void playInColumn(int col) {
-<<<<<<< HEAD
-        if (!isMyTurn()) return;
-=======
         if (!isMyTurn()) {
             return;
         }
->>>>>>> origin/gameplay
 
         for (int row = ROWS - 1; row >= 0; row--) {
             if (grid[row][col] == 0) {
                 grid[row][col] = playerNumber;
 
-<<<<<<< HEAD
-                Color c = (playerNumber == 1) ? Color.YELLOW : Color.RED;
-=======
                 Color c = getColorForPlayer(playerNumber);
->>>>>>> origin/gameplay
                 circles[row][col].setFill(c);
                 if (client != null) {
                     client.sendMessage(new Message("Moi", "MOVE:" + col));
                 }
 
-<<<<<<< HEAD
-                if (!isPvP) {
-=======
                 if (hasConnectFour(row, col, playerNumber)) {
                     finishGame(playerNumber);
                 } else if (isBoardFull()) {
@@ -441,7 +320,6 @@ public class ClientPanel extends Parent {
                 }
 
                 if (!isPvP && !gameEnded) {
->>>>>>> origin/gameplay
                     simulateAI();
                 }
                 return;
@@ -452,13 +330,6 @@ public class ClientPanel extends Parent {
     private void simulateAI() {
         Platform.runLater(() -> {
             for (int attempt = 0; attempt < 20; attempt++) {
-<<<<<<< HEAD
-                int col = (int)(Math.random() * COLS);
-                for (int row = ROWS - 1; row >= 0; row--) {
-                    if (grid[row][col] == 0) {
-                        grid[row][col] = 2;
-                        circles[row][col].setFill(Color.RED);
-=======
                 int col = (int) (Math.random() * COLS);
                 for (int row = ROWS - 1; row >= 0; row--) {
                     if (grid[row][col] == 0) {
@@ -470,7 +341,6 @@ public class ClientPanel extends Parent {
                         } else if (isBoardFull()) {
                             finishGame(0);
                         }
->>>>>>> origin/gameplay
                         return;
                     }
                 }
@@ -481,24 +351,17 @@ public class ClientPanel extends Parent {
     public void applyOpponentMove(int col) {
         Platform.runLater(() -> {
             int opponentNum = (playerNumber == 1) ? 2 : 1;
-<<<<<<< HEAD
-            Color color = (opponentNum == 1) ? Color.YELLOW : Color.RED;
-=======
             Color color = getColorForPlayer(opponentNum);
->>>>>>> origin/gameplay
             for (int row = ROWS - 1; row >= 0; row--) {
                 if (grid[row][col] == 0) {
                     grid[row][col] = opponentNum;
                     circles[row][col].setFill(color);
-<<<<<<< HEAD
-=======
 
                     if (hasConnectFour(row, col, opponentNum)) {
                         finishGame(opponentNum);
                     } else if (isBoardFull()) {
                         finishGame(0);
                     }
->>>>>>> origin/gameplay
                     return;
                 }
             }
@@ -508,16 +371,6 @@ public class ClientPanel extends Parent {
     private void startPvE() {
         isPvP = false;
         gameStarted = true;
-<<<<<<< HEAD
-        playerNumber = 1;
-            turnLabel.setTextFill(Color.YELLOW);
-        currentTurn = 1;
-        Platform.runLater(() -> {
-            lobbyPane.setVisible(false);
-            gamePane.setVisible(true);
-            turnLabel.setText("Mode Solo (PvE)");
-        });
-=======
         gameEnded = false;
         playerNumber = 1;
         currentTurn = 1;
@@ -566,20 +419,11 @@ public class ClientPanel extends Parent {
             statusLabel.setTextFill(Color.RED);
             statusLabel.setText("Connexion impossible au serveur.");
         }
->>>>>>> origin/gameplay
     }
 
     private void startPvP(int playerNum) {
         isPvP = true;
         gameStarted = true;
-<<<<<<< HEAD
-        playerNumber = playerNum;
-        Platform.runLater(() -> {
-            lobbyPane.setVisible(false);
-            gamePane.setVisible(true);
-            updateTurnLabel();
-        });
-=======
         gameEnded = false;
         playerNumber = playerNum;
         resetBoard();
@@ -669,18 +513,12 @@ public class ClientPanel extends Parent {
         lobbyPane.setVisible(false);
         startPane.setVisible(true);
         startStatusLabel.setText(message);
->>>>>>> origin/gameplay
     }
 
     private void updateTurnLabel() {
         if (currentTurn == playerNumber) {
-<<<<<<< HEAD
-            turnLabel.setText("À vous de jouer !");
-            turnLabel.setTextFill(Color.YELLOW);
-=======
             turnLabel.setText("A vous de jouer !");
             turnLabel.setTextFill(Color.DEEPSKYBLUE);
->>>>>>> origin/gameplay
         } else {
             turnLabel.setText("Tour de l'adversaire...");
             turnLabel.setTextFill(Color.LIGHTGRAY);
@@ -691,8 +529,6 @@ public class ClientPanel extends Parent {
         this.client = client;
     }
 
-<<<<<<< HEAD
-=======
     public void onServerDisconnected() {
         Platform.runLater(() -> {
             if (expectedDisconnect) {
@@ -704,40 +540,23 @@ public class ClientPanel extends Parent {
         });
     }
 
->>>>>>> origin/gameplay
     public void printNewMessage(Message mess) {
         Platform.runLater(() -> {
             String content = mess.getContent() != null ? mess.getContent() : mess.toString();
 
             if (content.startsWith("STATE:WAITING")) {
-<<<<<<< HEAD
-                statusLabel.setText("En attente d'un adversaire...");
-=======
                 startPane.setVisible(false);
                 gamePane.setVisible(false);
                 endOverlay.setVisible(false);
                 lobbyPane.setVisible(true);
                 statusLabel.setText("En attente d'un adversaire...");
                 statusLabel.setTextFill(Color.BLACK);
->>>>>>> origin/gameplay
 
             } else if (content.startsWith("STATE:READY:")) {
                 int num = Integer.parseInt(content.split(":")[2]);
                 startPvP(num);
 
             } else if (content.startsWith("STATE:FULL")) {
-<<<<<<< HEAD
-                statusLabel.setText("Partie pleine ! Réessayez plus tard.");
-                statusLabel.setTextFill(Color.RED);
-
-            } else if (content.startsWith("STATE:OPPONENT_LEFT")) {
-                gameStarted = false;
-                gamePane.setVisible(false);
-                lobbyPane.setVisible(true);
-                statusLabel.setText("L'adversaire a quitté. En attente...");
-                statusLabel.setTextFill(Color.ORANGE);
-                resetBoard();
-=======
                 showStartMenu("Partie pleine. Reessayez plus tard.");
 
             } else if (content.startsWith("STATE:OPPONENT_LEFT")) {
@@ -760,43 +579,11 @@ public class ClientPanel extends Parent {
                 if (gameStarted && isPvP && !gameEnded) {
                     updateTurnLabel();
                 }
->>>>>>> origin/gameplay
 
             } else if (content.startsWith("MOVE:")) {
                 int col = Integer.parseInt(content.split(":")[1].trim());
                 applyOpponentMove(col);
 
-<<<<<<< HEAD
-            } else if (content.startsWith("GAME_OVER:WINNER:")) {
-                int winner = Integer.parseInt(content.split(":")[2]);
-                gameStarted = false;
-
-                if (winner == playerNumber) {
-                    turnLabel.setText("Partie terminée : vous avez gagné !");
-                    turnLabel.setTextFill(Color.LIMEGREEN);
-                } else {
-                    turnLabel.setText("Partie terminée : vous avez perdu.");
-                    turnLabel.setTextFill(Color.ORANGERED);
-                }
-
-            } else if (content.startsWith("GAME_OVER:DRAW")) {
-                gameStarted = false;
-                turnLabel.setText("Partie terminée : match nul.");
-                turnLabel.setTextFill(Color.DEEPSKYBLUE);
-
-            } else if (content.startsWith("ERROR:NOT_YOUR_TURN")) {
-                // Ignorer, l'UI bloque déjà
-
-            } else if (content.startsWith("ERROR:COLUMN_FULL")) {
-                turnLabel.setText("Colonne pleine, choisissez-en une autre.");
-                turnLabel.setTextFill(Color.ORANGE);
-
-            } else if (content.startsWith("ERROR:INVALID_MOVE")) {
-                turnLabel.setText("Coup invalide.");
-                turnLabel.setTextFill(Color.ORANGE);
-
-            } else {
-=======
             } else if (content.startsWith("REMATCH:READY_COUNT:")) {
                 int readyCount = Integer.parseInt(content.split(":")[2]);
                 if (gameEnded && isPvP) {
@@ -816,7 +603,6 @@ public class ClientPanel extends Parent {
                 }
 
             } else if (!content.startsWith("ERROR:NOT_YOUR_TURN")) {
->>>>>>> origin/gameplay
                 printChatMessage(mess);
             }
         });
@@ -832,13 +618,6 @@ public class ClientPanel extends Parent {
 
     private void resetBoard() {
         grid = new int[ROWS][COLS];
-<<<<<<< HEAD
-        for (int r = 0; r < ROWS; r++)
-            for (int c = 0; c < COLS; c++)
-                circles[r][c].setFill(Color.WHITE);
-    }
-}
-=======
         for (int r = 0; r < ROWS; r++) {
             for (int c = 0; c < COLS; c++) {
                 circles[r][c].setFill(Color.WHITE);
@@ -923,5 +702,3 @@ public class ClientPanel extends Parent {
         endOverlay.setVisible(true);
     }
 }
-
->>>>>>> origin/gameplay

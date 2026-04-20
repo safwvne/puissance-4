@@ -28,7 +28,7 @@ public class GameViewController {
 
             Player currentPlayer = Session.getCurrentPlayer();
             if (currentPlayer != null) {
-                client.authenticate(currentPlayer.getUsername());
+//                client.authenticate(currentPlayer.getUsername());
             }
 
         } catch (Exception e) {

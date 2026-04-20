@@ -1,4 +1,5 @@
 package com.devops.puissance4.server;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -17,15 +18,12 @@ public class Connection implements Runnable {
             try {
                 Socket sockNewClient = serverSocket.accept();
                 ConnectedClient newClient = new ConnectedClient(server, sockNewClient);
-<<<<<<< HEAD
-                server.addClient(newClient);
-                new Thread(newClient).start();
-=======
                 if (server.addClient(newClient)) {
                     new Thread(newClient).start();
                 }
->>>>>>> origin/gameplay
-            } catch (IOException e) { e.printStackTrace(); }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 }

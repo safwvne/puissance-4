@@ -9,15 +9,9 @@ import java.net.Socket;
 
 public class ConnectedClient implements Runnable {
     private static int idCounter = 0;
-<<<<<<< HEAD
 
     private int id;
     private int playerNumber;
-    private String username;
-=======
-    private int id;
-    private int playerNumber;
->>>>>>> origin/gameplay
     private Server server;
     private Socket socket;
     private ObjectOutputStream out;
@@ -30,32 +24,25 @@ public class ConnectedClient implements Runnable {
         this.out = new ObjectOutputStream(socket.getOutputStream());
     }
 
-    public int getId() { return id; }
-    public int getPlayerNumber() { return playerNumber; }
-    public void setPlayerNumber(int n) { this.playerNumber = n; }
-
-<<<<<<< HEAD
-    public String getUsername() {
-        return username;
+    public int getId() {
+        return id;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public int getPlayerNumber() {
+        return playerNumber;
     }
 
-=======
->>>>>>> origin/gameplay
+    public void setPlayerNumber(int n) {
+        this.playerNumber = n;
+    }
+
     public void sendMessage(Message mess) {
         try {
             out.writeObject(mess);
             out.flush();
-<<<<<<< HEAD
         } catch (IOException e) {
             e.printStackTrace();
         }
-=======
-        } catch (IOException e) { e.printStackTrace(); }
->>>>>>> origin/gameplay
     }
 
     public void run() {
@@ -65,41 +52,19 @@ public class ConnectedClient implements Runnable {
                 Message mess = (Message) in.readObject();
                 if (mess != null) {
                     String content = mess.getContent();
-<<<<<<< HEAD
 
-                    if (content != null && content.startsWith("AUTH:")) {
-                        String receivedUsername = content.substring("AUTH:".length()).trim();
-                        if (!receivedUsername.isBlank()) {
-                            this.username = receivedUsername;
-                            System.out.println("Client " + id + " authentifié en tant que " + username);
-                        }
-
-                    } else if (content != null && content.startsWith("MOVE:")) {
+                    if (content != null && content.startsWith("MOVE:")) {
                         try {
                             int col = Integer.parseInt(content.split(":")[1].trim());
                             server.handleMove(this, col);
                         } catch (NumberFormatException ignored) {
                         }
-
-                    } else {
-                        String displayName = (username != null && !username.isBlank())
-                                ? username
-                                : "Joueur " + playerNumber;
-
-                        mess.setSender(displayName);
-=======
-                    if (content != null && content.startsWith("MOVE:")) {
-                        try {
-                            int col = Integer.parseInt(content.split(":")[1].trim());
-                            server.handleMove(this, col);
-                        } catch (NumberFormatException ignored) {}
                     } else if ("REMATCH:READY".equals(content)) {
                         server.handleRematchReady(this);
                     } else if ("REMATCH:MENU".equals(content)) {
                         server.handleRematchMenu();
                     } else {
                         mess.setSender("Joueur " + playerNumber);
->>>>>>> origin/gameplay
                         server.broadcastMessage(mess, id);
                     }
                 }
@@ -111,15 +76,17 @@ public class ConnectedClient implements Runnable {
 
     public void closeClient() {
         try {
-            if (in != null) in.close();
-            if (out != null) out.close();
-            socket.close();
-<<<<<<< HEAD
+            if (in != null) {
+                in.close();
+            }
+            if (out != null) {
+                out.close();
+            }
+            if (socket != null) {
+                socket.close();
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
-=======
-        } catch (IOException e) { e.printStackTrace(); }
->>>>>>> origin/gameplay
     }
 }
