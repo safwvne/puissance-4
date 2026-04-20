@@ -529,17 +529,6 @@ public class ClientPanel extends Parent {
         this.client = client;
     }
 
-    public void onServerDisconnected() {
-        Platform.runLater(() -> {
-            if (expectedDisconnect) {
-                expectedDisconnect = false;
-                showStartMenu("Choisissez un mode.");
-                return;
-            }
-            showStartMenu("Connexion serveur fermee.");
-        });
-    }
-
     public void printNewMessage(Message mess) {
         Platform.runLater(() -> {
             String content = mess.getContent() != null ? mess.getContent() : mess.toString();
