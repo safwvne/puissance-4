@@ -1,6 +1,10 @@
 package com.devops.puissance4.client;
 
 import com.devops.puissance4.common.Message;
+import com.devops.puissance4.model.Player;
+import com.devops.puissance4.service.PlayerStats;
+import com.devops.puissance4.service.PlayerStatsService;
+import com.devops.puissance4.util.Session;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -19,6 +23,8 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.TextFlow;
+
+import java.util.Locale;
 
 public class ClientPanel extends Parent {
     private static final int COLS = 7;
@@ -49,6 +55,15 @@ public class ClientPanel extends Parent {
     private Label endTitleLabel;
     private Label endSubtitleLabel;
 
+    private Label welcomeLabel;
+    private Label totalGamesValueLabel;
+    private Label winsValueLabel;
+    private Label lossesValueLabel;
+    private Label drawsValueLabel;
+    private Label winRateValueLabel;
+
+    private final PlayerStatsService playerStatsService = new PlayerStatsService();
+
     private TextArea textToSend;
     private ScrollPane scrollReceivedText;
     private TextFlow receivedText;
@@ -71,6 +86,7 @@ public class ClientPanel extends Parent {
         buildEndOverlay();
 
         root.getChildren().addAll(gamePane, lobbyPane, startPane, endOverlay);
+        refreshStats();
         showStartMenu("Choisissez un mode.");
 
         this.getChildren().add(root);
@@ -80,9 +96,42 @@ public class ClientPanel extends Parent {
         startPane = new VBox(16);
         startPane.setAlignment(Pos.CENTER);
         startPane.setPrefSize(620, 800);
+        startPane.setPadding(new Insets(20));
 
         Label title = new Label("PUISSANCE 4");
         title.setFont(Font.font("Arial", FontWeight.BOLD, 42));
+
+        welcomeLabel = new Label("Bienvenue");
+        welcomeLabel.setTextFill(Color.web("#333333"));
+        welcomeLabel.setFont(Font.font("Arial", FontWeight.BOLD, 18));
+
+        VBox statsCard = new VBox(12);
+        statsCard.setAlignment(Pos.CENTER);
+        statsCard.setMaxWidth(420);
+        statsCard.setStyle("-fx-background-color: white; -fx-padding: 18; -fx-background-radius: 16; -fx-border-radius: 16; -fx-border-color: #dcdce1;");
+
+        Label statsTitle = new Label("Vos statistiques");
+        statsTitle.setFont(Font.font("Arial", FontWeight.BOLD, 18));
+        statsTitle.setTextFill(Color.web("#1c1c1e"));
+
+        HBox row1 = new HBox(12,
+                createStatBox("Parties", totalGamesValueLabel = new Label("0")),
+                createStatBox("Victoires", winsValueLabel = new Label("0"))
+        );
+        row1.setAlignment(Pos.CENTER);
+
+        HBox row2 = new HBox(12,
+                createStatBox("Défaites", lossesValueLabel = new Label("0")),
+                createStatBox("Nuls", drawsValueLabel = new Label("0"))
+        );
+        row2.setAlignment(Pos.CENTER);
+
+        HBox row3 = new HBox(
+                createStatBox("Taux de victoire", winRateValueLabel = new Label("0%"))
+        );
+        row3.setAlignment(Pos.CENTER);
+
+        statsCard.getChildren().addAll(statsTitle, row1, row2, row3);
 
         Button soloBtn = new Button("Jouer solo (IA)");
         soloBtn.setStyle("-fx-background-color: #3e8ef7; -fx-text-fill: white; -fx-font-size: 14; -fx-padding: 10 25; -fx-background-radius: 8;");
@@ -96,7 +145,50 @@ public class ClientPanel extends Parent {
         startStatusLabel.setTextFill(Color.DIMGRAY);
         startStatusLabel.setFont(Font.font("Arial", FontWeight.BOLD, 14));
 
-        startPane.getChildren().addAll(title, soloBtn, pvpBtn, startStatusLabel);
+        startPane.getChildren().addAll(title, welcomeLabel, statsCard, soloBtn, pvpBtn, startStatusLabel);
+    }
+
+    private VBox createStatBox(String title, Label valueLabel) {
+        VBox box = new VBox(6);
+        box.setAlignment(Pos.CENTER);
+        box.setPrefWidth(160);
+        box.setPadding(new Insets(12));
+        box.setStyle("-fx-background-color: #f5f6fa; -fx-background-radius: 12;");
+
+        Label titleLabel = new Label(title);
+        titleLabel.setTextFill(Color.web("#6e6e73"));
+        titleLabel.setFont(Font.font("Arial", FontWeight.BOLD, 12));
+
+        valueLabel.setTextFill(Color.web("#111827"));
+        valueLabel.setFont(Font.font("Arial", FontWeight.EXTRA_BOLD, 20));
+
+        box.getChildren().addAll(titleLabel, valueLabel);
+        return box;
+    }
+
+    private void refreshStats() {
+        Player currentPlayer = Session.getCurrentPlayer();
+
+        if (currentPlayer == null) {
+            welcomeLabel.setText("Bienvenue");
+            totalGamesValueLabel.setText("0");
+            winsValueLabel.setText("0");
+            lossesValueLabel.setText("0");
+            drawsValueLabel.setText("0");
+            winRateValueLabel.setText("0%");
+            return;
+        }
+
+        String username = currentPlayer.getUsername() != null ? currentPlayer.getUsername() : "joueur";
+        welcomeLabel.setText("Bienvenue " + username);
+
+        PlayerStats stats = playerStatsService.getStatsForPlayer(currentPlayer.getId());
+
+        totalGamesValueLabel.setText(String.valueOf(stats.getTotalGames()));
+        winsValueLabel.setText(String.valueOf(stats.getWins()));
+        lossesValueLabel.setText(String.valueOf(stats.getLosses()));
+        drawsValueLabel.setText(String.valueOf(stats.getDraws()));
+        winRateValueLabel.setText(String.format(Locale.US, "%.0f%%", stats.getWinRate()));
     }
 
     private void buildLobby() {
@@ -481,6 +573,7 @@ public class ClientPanel extends Parent {
 
     private void onMenuClicked() {
         if (!isPvP) {
+            refreshStats();
             showStartMenu("Choisissez un mode.");
             return;
         }
@@ -488,6 +581,7 @@ public class ClientPanel extends Parent {
         if (client != null && client.isConnected()) {
             client.sendMessage(new Message("Moi", "REMATCH:MENU"));
         } else {
+            refreshStats();
             showStartMenu("Connexion perdue.");
         }
     }
@@ -497,6 +591,7 @@ public class ClientPanel extends Parent {
             expectedDisconnect = true;
             client.disconnect();
         }
+        refreshStats();
         showStartMenu("Choisissez un mode.");
     }
 
@@ -507,6 +602,7 @@ public class ClientPanel extends Parent {
         playerNumber = 0;
         currentTurn = 0;
         resetBoard();
+        refreshStats();
 
         endOverlay.setVisible(false);
         gamePane.setVisible(false);
@@ -572,6 +668,13 @@ public class ClientPanel extends Parent {
             } else if (content.startsWith("MOVE:")) {
                 int col = Integer.parseInt(content.split(":")[1].trim());
                 applyOpponentMove(col);
+
+            } else if (content.startsWith("GAME_OVER:WINNER:")) {
+                int winner = Integer.parseInt(content.split(":")[2]);
+                finishGame(winner);
+
+            } else if (content.startsWith("GAME_OVER:DRAW")) {
+                finishGame(0);
 
             } else if (content.startsWith("REMATCH:READY_COUNT:")) {
                 int readyCount = Integer.parseInt(content.split(":")[2]);
